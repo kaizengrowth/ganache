@@ -207,10 +207,12 @@ class ConfigScreen extends PureComponent {
               {this._renderTabHeader()}
             </div>
             <div className="Actions">
-              <button className="btn btn-primary" onClick={hashHistory.goBack}>
-                <EjectIcon /*size={18}*/ />
-                CANCEL
-              </button>
+              <OnlyIf test={this.props.params.showCancel === undefined || this.props.params.showCancel === true}>
+                <button className="btn btn-primary" onClick={hashHistory.goBack}>
+                  <EjectIcon /*size={18}*/ />
+                  CANCEL
+                </button>
+              </OnlyIf>
               <button
                 className="btn btn-primary"
                 onClick={this.restartServer}
