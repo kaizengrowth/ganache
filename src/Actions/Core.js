@@ -5,6 +5,11 @@ import { ipcRenderer } from 'electron'
 
 const prefix = 'CORE'
 
+export const SET_SETTINGS = `${prefix}/SET_SETTINGS`
+export function setSettings() {
+  return { type: SET_SETTINGS }
+}
+
 export const SET_SERVER_STARTED = `${prefix}/SET_SERVER_STARTED`
 export function setServerStarted() {
   return { type: SET_SERVER_STARTED }
@@ -95,5 +100,10 @@ export const getBlockSubscription = function() {
 export const SET_SYSTEM_ERROR = `${prefix}/SET_SYSTEM_ERROR`
 export const setSystemError = function(error) {
   return {type: SET_SYSTEM_ERROR, error}
+}
+
+export const DISMISS_SYSTEM_ERROR = `${prefix}/DISMISS_SYSTEM_ERROR`
+export const dismissSystemError = function() {
+  return {type: DISMISS_SYSTEM_ERROR}
 }
 

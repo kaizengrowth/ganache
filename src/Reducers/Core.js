@@ -90,6 +90,11 @@ export default function (state = initialState, action) {
         systemError: action.error
       })
 
+    case Core.DISMISS_SYSTEM_ERROR:
+      return Object.assign({}, state, {
+        systemError: null
+      })
+
     case Core.SET_NEW_VERSION_INFO:
       return Object.assign({}, state, {
         updateInfo: {
