@@ -86,9 +86,20 @@ class BugModal extends Component {
           knownError = true
           title = `Uh Oh... We Couldn't Start the RPC Server`
           mainMessage = {__html: `Ganache had issues starting the RPC server with the network interface
-            and port settings you used.<br /><br />Please make sure you don't have multiple instances of
-            Ganache running or have any other processes running on the same port.<br /><br />You can see
-            the detailed error below:`}
+            and port settings you used.<br /><br />It appears that another process is using the same port
+            on the network interface/hostname you have specified. Please make sure you don't have multiple
+            instances of Ganache running or have any other processes running on the same port.<br /><br />
+            You can see the detailed error below:`}
+          break;
+        case "EADDRNOTAVAIL":
+          knownError = true
+          title = `Uh Oh... We Couldn't Start the RPC Server`
+          mainMessage = {__html: `Ganache had issues starting the RPC server with the network interface
+            and port settings you used.<br /><br />It appears you may be using a non-local hostname/
+            IP address. Ganache currently cannot listen to remote blockchains (i.e. Mainnet, Ropsten,
+            other Ganache instances).<br /><br />Please make sure you select a hostname/IP address
+            that represents your local computer (i.e. 127.0.0.1, 0.0.0.0, 192.168.X.X, 10.0.X.X, etc.)
+            <br /><br />You can see the detailed error below:`}
           break;
         default:
           break;
