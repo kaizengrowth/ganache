@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 
+import { dismissSystemError } from '../../Actions/Core'
+
 import connect from '../Helpers/connect'
 
 import Modal from '../../Elements/Modal'
@@ -10,7 +12,9 @@ import { sanitizeError, sanitizePaths } from '../Helpers/sanitize.js'
 
 import { shell } from 'electron'
 
-const { app } = require('electron').remote
+import OnlyIf from '../../Elements/OnlyIf';
+
+const { app, getCurrentWebContents } = require('electron').remote
 
 class BugModal extends Component {
   constructor () {
@@ -70,6 +74,8 @@ class BugModal extends Component {
       sanitizedLogLines = this.renderAndSanitizeLogLines()
     }
 
+    const knownError = true;
+
     return (
       <Modal className="BugModal">
         <section className="Bug">
@@ -77,23 +83,33 @@ class BugModal extends Component {
           <h4>Uh Oh... That's a bug.</h4>
           <p>
             Ganache encountered an error. Help us fix it by raising a GitHub issue!<br /><br /> Mention the following error information when writing your ticket, and please include as much information as possible. Sorry about that!
-            </p>
+          </p>
           <textarea disabled={true} value={sanitizedSystemError} />
           <footer>
+            <OnlyIf test={!knownError}>
+              <button
+                onClick={() => {
+                  const title = encodeURIComponent(
+                    `System Error when running Ganache ${app.getVersion()} on ${process.platform}`
+                  )
+
+                  const body = this.renderIssueBody(sanitizedSystemError, sanitizedLogLines)
+
+                  shell.openExternal(
+                    `https://github.com/trufflesuite/ganache/issues/new?title=${title}&body=${body}`
+                  )
+                }}
+              >
+                Raise Github Issue
+              </button>
+            </OnlyIf>
             <button
               onClick={() => {
-                const title = encodeURIComponent(
-                  `System Error when running Ganache ${app.getVersion()} on ${process.platform}`
-                )
-
-                const body = this.renderIssueBody(sanitizedSystemError, sanitizedLogLines)
-
-                shell.openExternal(
-                  `https://github.com/trufflesuite/ganache/issues/new?title=${title}&body=${body}`
-                )
+                getCurrentWebContents().send('navigate', '/config/false')
+                this.props.dispatch(dismissSystemError())
               }}
             >
-              Raise Github Issue
+              OPEN SETTINGS
             </button>
             <button
               onClick={() => {
@@ -102,7 +118,7 @@ class BugModal extends Component {
               }}
             >
               RELAUNCH
-              </button>
+            </button>
           </footer>
         </section>
       </Modal>
