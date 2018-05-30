@@ -74,15 +74,35 @@ class BugModal extends Component {
       sanitizedLogLines = this.renderAndSanitizeLogLines()
     }
 
-    const knownError = true;
+    let knownError = false;
+    let title = `Uh Oh... That's a bug.`
+    let mainMessage = {__html: `Ganache encountered an error. Help us fix it by raising a GitHub issue!
+      <br /><br />Mention the following error information when writing your ticket, and please include as
+      much information as possible. Sorry about that!`}
+
+    if ("code" in this.props.systemError) {
+      switch (this.props.systemError.code) {
+        case "EADDRINUSE":
+          knownError = true
+          title = `Uh Oh... We Couldn't Start the RPC Server`
+          mainMessage = {__html: `Ganache had issues starting the RPC server with the network interface
+            and port settings you used.<br /><br />Please make sure you don't have multiple instances of
+            Ganache running or have any other processes running on the same port.<br /><br />You can see
+            the detailed error below:`}
+          break;
+        default:
+          break;
+      }
+    }
 
     return (
       <Modal className="BugModal">
         <section className="Bug">
-          <BugIcon /*size={192}*/ />
-          <h4>Uh Oh... That's a bug.</h4>
-          <p>
-            Ganache encountered an error. Help us fix it by raising a GitHub issue!<br /><br /> Mention the following error information when writing your ticket, and please include as much information as possible. Sorry about that!
+          <OnlyIf test={!knownError}>
+            <BugIcon /*size={192}*/ />
+          </OnlyIf>
+          <h4>{title}</h4>
+          <p dangerouslySetInnerHTML={mainMessage}>
           </p>
           <textarea disabled={true} value={sanitizedSystemError} />
           <footer>
