@@ -184,7 +184,7 @@
   },
   "dependencies": {
     "@exponent/electron-cookies": "^2.0.0",
-    "async": "^2.5.0",
+    "async": "^2.6.4",
     "benjamincburns-forked-electron-updater": "2.21.6",
     "builder-util-runtime": "^4.2.0",
     "electron-compile": "^6.4.2",
